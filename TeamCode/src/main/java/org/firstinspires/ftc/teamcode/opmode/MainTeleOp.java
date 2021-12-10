@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
@@ -13,23 +13,14 @@ import org.firstinspires.ftc.teamcode.subsystem.Deposit;
 import org.firstinspires.ftc.teamcode.subsystem.Intake;
 
 @TeleOp(name="TeleOp")
-public class MainTeleOp extends CommandOpMode {
+public class MainTeleOp extends OpModeTemplate {
     private SampleMecanumDrive mecanumDrive;
     private Deposit deposit;
     private Intake intake;
 
     @Override
     public void initialize() {
-        mecanumDrive = new SampleMecanumDrive(hardwareMap);
-
-        deposit = new Deposit(hardwareMap, true);
-        intake = new Intake(hardwareMap);
-
-        register(intake, deposit);
-
-        GamepadEx driverGamepad = new GamepadEx(gamepad1);
-        GamepadEx secondaryGamepad = new GamepadEx(gamepad2);
-
+        initHardware();
 
         new GamepadButton(driverGamepad, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(deposit::goToLevel3);
         new GamepadButton(driverGamepad, GamepadKeys.Button.A).whenPressed(deposit::deploy);
