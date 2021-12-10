@@ -1,0 +1,51 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.button.GamepadButton;
+import com.arcrobotics.ftclib.command.button.Trigger;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystem.Deposit;
+import org.firstinspires.ftc.teamcode.subsystem.Intake;
+
+@TeleOp(name="TeleOp")
+public class MainTeleOp extends CommandOpMode {
+    private SampleMecanumDrive mecanumDrive;
+    private Deposit deposit;
+    private Intake intake;
+
+    @Override
+    public void initialize() {
+        mecanumDrive = new SampleMecanumDrive(hardwareMap);
+
+        deposit = new Deposit(hardwareMap, true);
+        deposit.register();
+
+        intake = new Intake(hardwareMap);
+        intake.register();
+
+        GamepadEx driverGamepad = new GamepadEx(gamepad1);
+        GamepadEx secondaryGamepad = new GamepadEx(gamepad2);
+
+
+        new GamepadButton(driverGamepad, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(deposit::goToLevel3);
+        new GamepadButton(driverGamepad, GamepadKeys.Button.A).whenPressed(deposit::deploy);
+        new GamepadButton(driverGamepad, GamepadKeys.Button.LEFT_BUMPER).whenPressed(deposit::retract);
+    }
+
+    @Override
+    public void run() {
+        super.run();
+
+        mecanumDrive.setDrivePower(
+                new Pose2d(-gamepad1.left_stick_y,
+                        -gamepad1.left_stick_x,
+                        -gamepad1.right_stick_x));
+
+        intake.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+    }
+}
