@@ -13,14 +13,14 @@ public class Intake extends SubsystemBase {
 
     public Intake(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
+
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
     public void register() {
         super.register();
-
-        intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
-        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override

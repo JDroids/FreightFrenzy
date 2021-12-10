@@ -18,9 +18,6 @@ public class Deposit extends SubsystemBase {
     private Servo flipServo;
 
     private double targetHeight;
-    private double power;
-
-    private boolean shouldResetEncoder;
 
     private ElapsedTime timer = new ElapsedTime();
 
@@ -44,14 +41,6 @@ public class Deposit extends SubsystemBase {
     public Deposit(HardwareMap hardwareMap, boolean shouldResetEncoder) {
 
         this.hardwareMap = hardwareMap;
-        this.shouldResetEncoder = shouldResetEncoder;
-    }
-
-    private boolean hasBeenRegistered = false;
-
-    @Override
-    public void register() {
-        super.register();
 
         extensionMotor = hardwareMap.get(DcMotorEx.class, "depositMotor");
         flipServo = hardwareMap.get(Servo.class, "depositServo");
@@ -66,16 +55,10 @@ public class Deposit extends SubsystemBase {
         extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         flipServo.setPosition(RETRACTED_POSITION);
-
-        hasBeenRegistered = true;
     }
 
     @Override
     public void periodic() {
-        if (!hasBeenRegistered) {
-            return;
-        }
-        
         extensionMotor.setTargetPosition(inchesToTicks(targetHeight));
         extensionMotor.setPower(1.0);
 

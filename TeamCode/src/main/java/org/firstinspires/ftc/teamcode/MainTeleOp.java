@@ -23,10 +23,9 @@ public class MainTeleOp extends CommandOpMode {
         mecanumDrive = new SampleMecanumDrive(hardwareMap);
 
         deposit = new Deposit(hardwareMap, true);
-        deposit.register();
-
         intake = new Intake(hardwareMap);
-        intake.register();
+
+        register(intake, deposit);
 
         GamepadEx driverGamepad = new GamepadEx(gamepad1);
         GamepadEx secondaryGamepad = new GamepadEx(gamepad2);
@@ -45,6 +44,8 @@ public class MainTeleOp extends CommandOpMode {
                 new Pose2d(-gamepad1.left_stick_y,
                         -gamepad1.left_stick_x,
                         -gamepad1.right_stick_x));
+
+        mecanumDrive.updatePoseEstimate();
 
         intake.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
     }
