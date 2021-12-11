@@ -100,7 +100,7 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
                         new Pose2d(-60,
                                 alliance.adjust(-58),
                                 Math.toRadians(alliance.adjust(90))))
-                        .forward(20.0)
+                        .forward(24.0)
                         .build();
 
 
