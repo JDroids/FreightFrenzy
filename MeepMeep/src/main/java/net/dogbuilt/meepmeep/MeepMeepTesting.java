@@ -69,7 +69,7 @@ public class MeepMeepTesting {
                 .setBackgroundAlpha(1f)
                 // Set constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(45, 30, Math.toRadians(233), Math.toRadians(180), 14)
-                .followTrajectorySequence(redWarehouseSide)
+                .followTrajectorySequence(redCarouselSide)
                 .start();
     }
 }

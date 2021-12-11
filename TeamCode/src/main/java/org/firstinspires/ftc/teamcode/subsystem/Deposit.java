@@ -22,9 +22,11 @@ public class Deposit extends SubsystemBase {
     private ElapsedTime timer = new ElapsedTime();
 
     public static double RETRACTED_HEIGHT = 0.3;
+    public static double LEVEL_1_HEIGHT = 15;
+    public static double LEVEL_2_HEIGHT = 20;
     public static double LEVEL_3_HEIGHT = 30;
 
-    public static double RETRACTED_POSITION = 0.34;
+    public static double RETRACTED_POSITION = 0.4;
     public static double MOVING_POSITION = 0.5;
     public static double DEPLOY_POSITION = 1.0;
 
@@ -91,9 +93,19 @@ public class Deposit extends SubsystemBase {
         state = State.GOING_TO_HEIGHT;
     }
 
+
+    public void goToLevel1() {
+        goToHeight(LEVEL_1_HEIGHT);
+    }
+
+    public void goToLevel2() {
+        goToHeight(LEVEL_2_HEIGHT);
+    }
+
     public void goToLevel3() {
         goToHeight(LEVEL_3_HEIGHT);
     }
+
 
     public void retract() {
         targetHeight = RETRACTED_HEIGHT;
@@ -103,6 +115,10 @@ public class Deposit extends SubsystemBase {
     public void deploy() {
         timer.reset();
         state = State.DEPLOY;
+    }
+
+    public boolean isBusy() {
+        return extensionMotor.isBusy() || state == State.DEPLOY;
     }
 
     private static int inchesToTicks(double inches) {

@@ -8,19 +8,16 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.command.DepositCommand;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystem.Deposit;
 import org.firstinspires.ftc.teamcode.subsystem.Intake;
 
 @TeleOp(name="TeleOp")
 public class MainTeleOp extends OpModeTemplate {
-    private SampleMecanumDrive mecanumDrive;
-    private Deposit deposit;
-    private Intake intake;
-
     @Override
     public void initialize() {
-        initHardware();
+        initHardware(true);
 
         new GamepadButton(driverGamepad, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(deposit::goToLevel3);
         new GamepadButton(driverGamepad, GamepadKeys.Button.A).whenPressed(deposit::deploy);
