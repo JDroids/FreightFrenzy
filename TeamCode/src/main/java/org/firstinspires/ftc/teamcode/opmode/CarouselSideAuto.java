@@ -2,11 +2,7 @@ package org.firstinspires.ftc.teamcode.opmode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.arcrobotics.ftclib.command.FunctionalCommand;
-import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.ParallelDeadlineGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.command.CarouselForTime;
@@ -14,6 +10,7 @@ import org.firstinspires.ftc.teamcode.command.DepositCommand;
 import org.firstinspires.ftc.teamcode.command.FollowTrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.vision.BarcodeTeamShippingElementPipeline;
+import org.opencv.core.Point;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -23,8 +20,18 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
     private final Alliance alliance;
     private BarcodeTeamShippingElementPipeline.Randomization randomization;
 
-    public CarouselSideAuto(Alliance alliance) {
+    private Point region1Pos;
+    private Point region2Pos;
+    private Point region3Pos;
+
+    public CarouselSideAuto(Alliance alliance,
+                            Point region1Pos,
+                            Point region2Pos,
+                            Point region3Pos) {
         this.alliance = alliance;
+        this.region1Pos = region1Pos;
+        this.region2Pos = region2Pos;
+        this.region3Pos = region3Pos;
     }
 
     @Override
@@ -41,14 +48,14 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
                                 alliance.adjust(-62),
                                 Math.toRadians(alliance.adjust(270))))
                         .setReversed(true)
-                        .splineTo(new Vector2d(-32, alliance.adjust(-28)),
-                                Math.toRadians(alliance.adjust(15)))
+                        .splineTo(new Vector2d(-30, alliance.adjust(-20)),
+                                Math.toRadians(alliance.adjust(0)))
                         .setReversed(false)
                         .build();
         final TrajectorySequence toCarouselLevel1 =
                 mecanumDrive.trajectorySequenceBuilder(
-                        new Pose2d(-32, alliance.adjust(-28),
-                                Math.toRadians(alliance.adjust(180+15))))
+                        new Pose2d(-30, alliance.adjust(-20),
+                                Math.toRadians(alliance.adjust(180+0))))
                         .splineTo(new Vector2d(-60, alliance.adjust(-40)),
                                 Math.toRadians(alliance.adjust(180)))
                         .turn(Math.toRadians(alliance.adjust(-90)))
@@ -61,14 +68,14 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
                                 alliance.adjust(-62),
                                 Math.toRadians(alliance.adjust(270))))
                         .setReversed(true)
-                        .splineTo(new Vector2d(-32, alliance.adjust(-28)),
-                                Math.toRadians(alliance.adjust(15)))
+                        .splineTo(new Vector2d(-29, alliance.adjust(-37)),
+                                Math.toRadians(alliance.adjust(45)))
                         .setReversed(false)
                         .build();
         final TrajectorySequence toCarouselLevel2 =
                 mecanumDrive.trajectorySequenceBuilder(
-                        new Pose2d(-32, alliance.adjust(-28),
-                                Math.toRadians(alliance.adjust(180+15))))
+                        new Pose2d(-29, alliance.adjust(-37),
+                                Math.toRadians(alliance.adjust(180+45))))
                         .splineTo(new Vector2d(-60, alliance.adjust(-40)),
                                     Math.toRadians(alliance.adjust(180)))
                         .turn(Math.toRadians(alliance.adjust(-90)))
@@ -105,7 +112,10 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
 
 
         OpenCvWebcam webcam;
-        BarcodeTeamShippingElementPipeline pipeline = new BarcodeTeamShippingElementPipeline();
+        BarcodeTeamShippingElementPipeline pipeline = new BarcodeTeamShippingElementPipeline(
+                region1Pos,
+                region2Pos,
+                region3Pos);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "cameraMonitorViewId",

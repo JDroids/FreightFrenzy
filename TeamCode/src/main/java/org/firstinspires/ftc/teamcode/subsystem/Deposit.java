@@ -21,12 +21,12 @@ public class Deposit extends SubsystemBase {
 
     private ElapsedTime timer = new ElapsedTime();
 
-    public static double RETRACTED_HEIGHT = 0.3;
-    public static double LEVEL_1_HEIGHT = 15;
+    public static double RETRACTED_HEIGHT = 0.34;
+    public static double LEVEL_1_HEIGHT = 11;
     public static double LEVEL_2_HEIGHT = 20;
     public static double LEVEL_3_HEIGHT = 30;
 
-    public static double RETRACTED_POSITION = 0.4;
+    public static double RETRACTED_POSITION = 0.34;
     public static double MOVING_POSITION = 0.5;
     public static double DEPLOY_POSITION = 1.0;
 

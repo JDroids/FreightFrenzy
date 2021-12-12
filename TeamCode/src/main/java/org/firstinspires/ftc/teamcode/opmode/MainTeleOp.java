@@ -19,6 +19,8 @@ public class MainTeleOp extends OpModeTemplate {
     public void initialize() {
         initHardware(true);
 
+        new GamepadButton(driverGamepad, GamepadKeys.Button.DPAD_DOWN).whenPressed(deposit::goToLevel1);
+        new GamepadButton(driverGamepad, GamepadKeys.Button.DPAD_UP).whenPressed(deposit::goToLevel2);
         new GamepadButton(driverGamepad, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(deposit::goToLevel3);
         new GamepadButton(driverGamepad, GamepadKeys.Button.A).whenPressed(deposit::deploy);
         new GamepadButton(driverGamepad, GamepadKeys.Button.LEFT_BUMPER).whenPressed(deposit::retract);

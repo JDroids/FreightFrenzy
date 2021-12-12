@@ -12,9 +12,9 @@ import org.openftc.easyopencv.OpenCvPipeline;
  * See https://github.com/OpenFTC/EasyOpenCV/blob/master/examples/src/main/java/org/firstinspires/ftc/teamcode/SkystoneDeterminationExample.java
  */
 public class BarcodeTeamShippingElementPipeline extends OpenCvPipeline {
-    private static final Point LEFT_REGION_TOP_LEFT_ANCHOR_POINT = new Point(0,140);
-    private static final Point CENTER_REGION_TOP_LEFT_ANCHOR_POINT = new Point(130,140);
-    private static final Point RIGHT_REGION_TOP_LEFT_ANCHOR_POINT = new Point(300,140);
+    private Point region1Pos;
+    private Point region2Pos;
+    private Point region3Pos;
 
     private static final int REGION_WIDTH = 20;
     private static final int REGION_HEIGHT = 20;
@@ -35,25 +35,33 @@ public class BarcodeTeamShippingElementPipeline extends OpenCvPipeline {
 
     private Randomization randomization;
 
+    public BarcodeTeamShippingElementPipeline(Point region1Pos,
+                                              Point region2Pos,
+                                              Point region3Pos) {
+        this.region1Pos = region1Pos;
+        this.region2Pos = region2Pos;
+        this.region3Pos = region3Pos;
+    }
+
     @Override
     public void init(Mat mat) {
         leftRectangle = new Rect(
-                LEFT_REGION_TOP_LEFT_ANCHOR_POINT,
+                region1Pos,
                 new Point(
-                        LEFT_REGION_TOP_LEFT_ANCHOR_POINT.x + REGION_WIDTH,
-                        LEFT_REGION_TOP_LEFT_ANCHOR_POINT.y + REGION_HEIGHT));
+                        region1Pos.x + REGION_WIDTH,
+                        region1Pos.y + REGION_HEIGHT));
 
         centerRectangle = new Rect(
-                CENTER_REGION_TOP_LEFT_ANCHOR_POINT,
+                region2Pos,
                 new Point(
-                        CENTER_REGION_TOP_LEFT_ANCHOR_POINT.x + REGION_WIDTH,
-                        CENTER_REGION_TOP_LEFT_ANCHOR_POINT.y + REGION_HEIGHT));
+                        region2Pos.x + REGION_WIDTH,
+                        region2Pos.y + REGION_HEIGHT));
 
         rightRectangle = new Rect(
-                RIGHT_REGION_TOP_LEFT_ANCHOR_POINT,
+                region3Pos,
                 new Point(
-                        RIGHT_REGION_TOP_LEFT_ANCHOR_POINT.x + REGION_WIDTH,
-                        RIGHT_REGION_TOP_LEFT_ANCHOR_POINT.y + REGION_HEIGHT));
+                        region3Pos.x + REGION_WIDTH,
+                        region3Pos.y + REGION_HEIGHT));
 
         inputToCb(mat);
 
