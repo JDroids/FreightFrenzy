@@ -152,14 +152,14 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
 
         switch (randomization) {
             case LEVEL_1:
+                toShippingHub = toShippingHubLevel3;
+                toCarousel = toCarouselLevel3;
+                depositExtension = deposit::goToLevel3;
+                break;
+            case LEVEL_2:
                 toShippingHub = toShippingHubLevel1;
                 toCarousel = toCarouselLevel1;
                 depositExtension = deposit::goToLevel1;
-                break;
-            case LEVEL_2:
-                toShippingHub = toShippingHubLevel2;
-                toCarousel = toCarouselLevel2;
-                depositExtension = deposit::goToLevel2;
                 break;
             default: // go to level 3, even if it's null because more points if just guessing
                 toShippingHub = toShippingHubLevel3;

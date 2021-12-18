@@ -19,6 +19,8 @@ public class Deposit extends SubsystemBase {
 
     private double targetHeight;
 
+    public static double offset = 0;
+
     private ElapsedTime timer = new ElapsedTime();
 
     public static double RETRACTED_HEIGHT = 0.34;
@@ -26,7 +28,7 @@ public class Deposit extends SubsystemBase {
     public static double LEVEL_2_HEIGHT = 20;
     public static double LEVEL_3_HEIGHT = 30;
 
-    public static double RETRACTED_POSITION = 0.34;
+    public static double RETRACTED_POSITION = 0.36;
     public static double MOVING_POSITION = 0.5;
     public static double DEPLOY_POSITION = 1.0;
 
@@ -61,7 +63,7 @@ public class Deposit extends SubsystemBase {
 
     @Override
     public void periodic() {
-        extensionMotor.setTargetPosition(inchesToTicks(targetHeight));
+        extensionMotor.setTargetPosition(inchesToTicks(targetHeight + offset));
         extensionMotor.setPower(1.0);
 
         switch (state) {
@@ -113,6 +115,10 @@ public class Deposit extends SubsystemBase {
     }
 
     public void deploy() {
+        if (state == State.RETRACTING || state == State.RETRACTED) {
+            return;
+        }
+
         timer.reset();
         state = State.DEPLOY;
     }

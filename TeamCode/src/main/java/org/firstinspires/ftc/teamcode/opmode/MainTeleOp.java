@@ -17,13 +17,15 @@ import org.firstinspires.ftc.teamcode.subsystem.Intake;
 public class MainTeleOp extends OpModeTemplate {
     @Override
     public void initialize() {
-        initHardware(true);
+        initHardware(false);
 
-        new GamepadButton(driverGamepad, GamepadKeys.Button.DPAD_DOWN).whenPressed(deposit::goToLevel1);
-        new GamepadButton(driverGamepad, GamepadKeys.Button.DPAD_UP).whenPressed(deposit::goToLevel2);
-        new GamepadButton(driverGamepad, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(deposit::goToLevel3);
-        new GamepadButton(driverGamepad, GamepadKeys.Button.A).whenPressed(deposit::deploy);
-        new GamepadButton(driverGamepad, GamepadKeys.Button.LEFT_BUMPER).whenPressed(deposit::retract);
+        new GamepadButton(driverGamepad, GamepadKeys.Button.LEFT_BUMPER).whenPressed(() -> deposit.goToHeight(25.0));
+        new GamepadButton(driverGamepad, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(deposit::deploy);
+        new GamepadButton(driverGamepad, GamepadKeys.Button.DPAD_DOWN).whenPressed(deposit::retract);
+        new GamepadButton(driverGamepad, GamepadKeys.Button.DPAD_UP).whenPressed(() -> deposit.goToHeight(14.0));
+
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.Y).whenPressed(() -> Deposit.offset += 0.25);
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.A).whenPressed(() -> Deposit.offset -= 0.25);
     }
 
     @Override
@@ -38,5 +40,7 @@ public class MainTeleOp extends OpModeTemplate {
         mecanumDrive.updatePoseEstimate();
 
         intake.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+
+        carousel.setPower(gamepad2.left_stick_y);
     }
 }

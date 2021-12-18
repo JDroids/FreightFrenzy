@@ -8,8 +8,8 @@ import org.opencv.core.Point;
 public class BlueCarouselSideAuto extends CarouselSideAuto {
     public BlueCarouselSideAuto() {
         super(Alliance.BLUE,
-                new Point(0,140),
-                new Point(90,140),
+                new Point(10,140),
+                new Point(190,140),
                 new Point(300,140));
     }
 }
