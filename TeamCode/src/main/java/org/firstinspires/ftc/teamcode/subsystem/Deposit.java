@@ -37,7 +37,8 @@ public class Deposit extends SubsystemBase {
         RETRACTED,
         RETRACTING,
         GOING_TO_HEIGHT,
-        DEPLOY
+        DEPLOY,
+        STARTING
     }
 
     private State state = State.RETRACTED;
@@ -58,7 +59,7 @@ public class Deposit extends SubsystemBase {
         extensionMotor.setTargetPosition(inchesToTicks(RETRACTED_HEIGHT));
         extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        flipServo.setPosition(RETRACTED_POSITION);
+        flipServo.setPosition(MOVING_POSITION);
     }
 
     @Override
@@ -87,6 +88,7 @@ public class Deposit extends SubsystemBase {
                     targetHeight = RETRACTED_HEIGHT;
                     state = State.RETRACTING;
                 }
+                break;
         }
     }
 
@@ -108,6 +110,9 @@ public class Deposit extends SubsystemBase {
         goToHeight(LEVEL_3_HEIGHT);
     }
 
+    public void start() {
+        state = State.STARTING;
+    }
 
     public void retract() {
         targetHeight = RETRACTED_HEIGHT;

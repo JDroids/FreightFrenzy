@@ -102,6 +102,13 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
                         .back(18.0)
                         .build();
 
+        final TrajectorySequence turnToCarouselForBlue = mecanumDrive.trajectorySequenceBuilder(
+                new Pose2d(-60,
+                alliance.adjust(-58),
+                Math.toRadians(alliance.adjust(90))))
+                    .turn(alliance.equals(Alliance.RED) ? 0 : Math.toRadians(55))
+                    .build();
+
         final TrajectorySequence park =
                 mecanumDrive.trajectorySequenceBuilder(
                         new Pose2d(-60,
@@ -152,30 +159,45 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
 
         switch (randomization) {
             case LEVEL_1:
-                toShippingHub = toShippingHubLevel3;
-                toCarousel = toCarouselLevel3;
-                depositExtension = deposit::goToLevel3;
-                break;
-            case LEVEL_2:
                 toShippingHub = toShippingHubLevel1;
                 toCarousel = toCarouselLevel1;
                 depositExtension = deposit::goToLevel1;
                 break;
+            case LEVEL_2:
+                toShippingHub = toShippingHubLevel3;
+                toCarousel = toCarouselLevel3;
+                depositExtension = () -> deposit.goToHeight(25.0);
+                break;
             default: // go to level 3, even if it's null because more points if just guessing
                 toShippingHub = toShippingHubLevel3;
                 toCarousel = toCarouselLevel3;
-                depositExtension = deposit::goToLevel3;
+                depositExtension = () -> deposit.goToHeight(25.0);
                 break;
         }
 
-        schedule(new SequentialCommandGroup(
-                new DepositCommand(deposit, depositExtension).alongWith(
-                        new FollowTrajectorySequence(mecanumDrive, toShippingHub)),
-                new DepositCommand(deposit, deposit::deploy),
-                new DepositCommand(deposit, deposit::retract).alongWith(
-                       new FollowTrajectorySequence(mecanumDrive, toCarousel)),
-                new CarouselForTime(carousel, 3.0, alliance.adjust(-0.6)),
-                new FollowTrajectorySequence(mecanumDrive, park)
-        ));
+
+        if (alliance.equals(Alliance.RED)) {
+            schedule(new SequentialCommandGroup(
+                    new DepositCommand(deposit, depositExtension).alongWith(
+                            new FollowTrajectorySequence(mecanumDrive, toShippingHub)),
+                    new DepositCommand(deposit, deposit::deploy),
+                    new DepositCommand(deposit, deposit::retract).alongWith(
+                            new FollowTrajectorySequence(mecanumDrive, toCarousel)),
+                    new CarouselForTime(carousel, 3.0, alliance.adjust(-0.6)),
+                    new FollowTrajectorySequence(mecanumDrive, park)
+            ));
+        }
+        else {
+            schedule(new SequentialCommandGroup(
+                    new DepositCommand(deposit, depositExtension).alongWith(
+                            new FollowTrajectorySequence(mecanumDrive, toShippingHub)),
+                    new DepositCommand(deposit, deposit::deploy),
+                    new DepositCommand(deposit, deposit::retract).alongWith(
+                            new FollowTrajectorySequence(mecanumDrive, toCarousel)),
+                    new FollowTrajectorySequence(mecanumDrive, turnToCarouselForBlue),
+                    new CarouselForTime(carousel, 3.0, alliance.adjust(-0.6)),
+                    new FollowTrajectorySequence(mecanumDrive, park)
+            ));
+        }
     }
 }
