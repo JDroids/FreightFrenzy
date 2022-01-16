@@ -68,16 +68,16 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
                                 alliance.adjust(-62),
                                 Math.toRadians(alliance.adjust(270))))
                         .setReversed(true)
-                        .splineTo(new Vector2d(-29, alliance.adjust(-37)),
-                                Math.toRadians(alliance.adjust(45)))
+                        .splineTo(new Vector2d(-30, alliance.adjust(-20)),
+                                Math.toRadians(alliance.adjust(0)))
                         .setReversed(false)
                         .build();
         final TrajectorySequence toCarouselLevel2 =
                 mecanumDrive.trajectorySequenceBuilder(
-                        new Pose2d(-29, alliance.adjust(-37),
-                                Math.toRadians(alliance.adjust(180+45))))
+                        new Pose2d(-30, alliance.adjust(-20),
+                                Math.toRadians(alliance.adjust(180+0))))
                         .splineTo(new Vector2d(-60, alliance.adjust(-40)),
-                                    Math.toRadians(alliance.adjust(180)))
+                                Math.toRadians(alliance.adjust(180)))
                         .turn(Math.toRadians(alliance.adjust(-90)))
                         .back(18.0)
                         .build();
@@ -164,9 +164,9 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
                 depositExtension = deposit::goToLevel1;
                 break;
             case LEVEL_2:
-                toShippingHub = toShippingHubLevel3;
-                toCarousel = toCarouselLevel3;
-                depositExtension = () -> deposit.goToHeight(25.0);
+                toShippingHub = toShippingHubLevel2;
+                toCarousel = toCarouselLevel2;
+                depositExtension = () -> deposit.goToHeight(14.0);
                 break;
             default: // go to level 3, even if it's null because more points if just guessing
                 toShippingHub = toShippingHubLevel3;

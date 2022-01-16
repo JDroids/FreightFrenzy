@@ -19,13 +19,15 @@ public class MainTeleOp extends OpModeTemplate {
     public void initialize() {
         initHardware(false);
 
-        new GamepadButton(driverGamepad, GamepadKeys.Button.LEFT_BUMPER).whenPressed(() -> deposit.goToHeight(25.0));
-        new GamepadButton(driverGamepad, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(deposit::deploy);
-        new GamepadButton(driverGamepad, GamepadKeys.Button.DPAD_DOWN).whenPressed(deposit::retract);
-        new GamepadButton(driverGamepad, GamepadKeys.Button.DPAD_UP).whenPressed(() -> deposit.goToHeight(14.0));
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.LEFT_BUMPER).whenPressed(() -> deposit.goToHeight(30.0));
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(deposit::deploy);
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.A).whenPressed(deposit::retract);
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.Y).whenPressed(() -> deposit.goToHeight(14.0));
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.X).whenPressed(() -> deposit.goToHeight(7.0));
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.B).whenPressed(() -> deposit.goToHeight(7.0));
 
-        new GamepadButton(secondaryGamepad, GamepadKeys.Button.Y).whenPressed(() -> Deposit.offset += 0.25);
-        new GamepadButton(secondaryGamepad, GamepadKeys.Button.A).whenPressed(() -> Deposit.offset -= 0.25);
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_UP).whenPressed(() -> Deposit.offset += 0.25);
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_DOWN).whenPressed(() -> Deposit.offset -= 0.25);
     }
 
     @Override
@@ -39,8 +41,8 @@ public class MainTeleOp extends OpModeTemplate {
 
         mecanumDrive.updatePoseEstimate();
 
-        intake.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+        intake.setPower(-gamepad2.left_stick_y);
 
-        carousel.setPower(gamepad2.left_stick_y);
+        carousel.setPower(gamepad1.left_trigger - gamepad1.right_trigger);
     }
 }
