@@ -19,8 +19,8 @@ public class MainTeleOp extends OpModeTemplate {
     public void initialize() {
         initHardware(false);
 
-        new GamepadButton(secondaryGamepad, GamepadKeys.Button.LEFT_BUMPER).whenPressed(() -> deposit.goToHeight(30.0));
-        new GamepadButton(secondaryGamepad, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(deposit::deploy);
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.LEFT_BUMPER).whenPressed(() -> deposit.goToHeight(28));
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(deposit::teleopDeploy);
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.A).whenPressed(deposit::retract);
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.Y).whenPressed(() -> deposit.goToHeight(14.0));
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.X).whenPressed(() -> deposit.goToHeight(7.0));
@@ -41,7 +41,8 @@ public class MainTeleOp extends OpModeTemplate {
 
         mecanumDrive.updatePoseEstimate();
 
-        intake.setPower(-gamepad2.left_stick_y);
+        double rawIntakePower = -gamepad2.left_stick_y;
+        intake.setPower(Math.signum(rawIntakePower) * rawIntakePower * rawIntakePower);
 
         carousel.setPower(gamepad1.left_trigger - gamepad1.right_trigger);
     }

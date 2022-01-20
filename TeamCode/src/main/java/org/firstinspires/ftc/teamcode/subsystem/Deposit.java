@@ -31,6 +31,7 @@ public class Deposit extends SubsystemBase {
     public static double RETRACTED_POSITION = 0.32;
     public static double MOVING_POSITION = 0.5;
     public static double DEPLOY_POSITION = 1.0;
+    public static double TELEOP_DEPLOY_POSITION = 0.8;
 
 
     private enum State {
@@ -38,6 +39,7 @@ public class Deposit extends SubsystemBase {
         RETRACTING,
         GOING_TO_HEIGHT,
         DEPLOY,
+        TELEOP_DEPLOY,
         STARTING
     }
 
@@ -89,6 +91,14 @@ public class Deposit extends SubsystemBase {
                     state = State.RETRACTING;
                 }
                 break;
+            case TELEOP_DEPLOY:
+                flipServo.setPosition(TELEOP_DEPLOY_POSITION);
+
+                if (timer.seconds() > 0.5) {
+                    targetHeight = RETRACTED_HEIGHT;
+                    state = State.RETRACTING;
+                }
+                break;
         }
     }
 
@@ -126,6 +136,15 @@ public class Deposit extends SubsystemBase {
 
         timer.reset();
         state = State.DEPLOY;
+    }
+
+    public void teleopDeploy() {
+        if (state == State.RETRACTING || state == State.RETRACTED) {
+            return;
+        }
+
+        timer.reset();
+        state = State.TELEOP_DEPLOY;
     }
 
     public boolean isBusy() {
