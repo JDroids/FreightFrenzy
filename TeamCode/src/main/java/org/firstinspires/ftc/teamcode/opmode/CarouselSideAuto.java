@@ -114,7 +114,7 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
                         new Pose2d(-60,
                                 alliance.adjust(-58),
                                 Math.toRadians(alliance.adjust(90))))
-                        .forward(24.0)
+                        .forward(21.0)
                         .build();
 
 
@@ -171,7 +171,7 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
             default: // go to level 3, even if it's null because more points if just guessing
                 toShippingHub = toShippingHubLevel3;
                 toCarousel = toCarouselLevel3;
-                depositExtension = () -> deposit.goToHeight(25.0);
+                depositExtension = () -> deposit.goToHeight(26.0);
                 break;
         }
 
