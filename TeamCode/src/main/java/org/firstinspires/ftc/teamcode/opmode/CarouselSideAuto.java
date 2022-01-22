@@ -166,7 +166,7 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
             case LEVEL_2:
                 toShippingHub = toShippingHubLevel2;
                 toCarousel = toCarouselLevel2;
-                depositExtension = () -> deposit.goToHeight(16.0);
+                depositExtension = () -> deposit.goToHeight(14.0);
                 break;
             default: // go to level 3, even if it's null because more points if just guessing
                 toShippingHub = toShippingHubLevel3;

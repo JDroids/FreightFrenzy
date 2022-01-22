@@ -42,13 +42,24 @@ public abstract class WarehouseSideAuto extends OpModeTemplate {
                 alliance.adjust(-62),
                 Math.toRadians(alliance.adjust(270))));
 
-        final TrajectorySequence toShippingHubLevel1And2 =
+        final TrajectorySequence toShippingHubLevel1 =
                 mecanumDrive.trajectorySequenceBuilder(
                         new Pose2d(7,
                                 alliance.adjust(-62),
                                 Math.toRadians(alliance.adjust(270))))
                         .setReversed(true)
-                        .splineTo(new Vector2d(-12, alliance.adjust(-42)),
+                        .splineTo(new Vector2d(-12, alliance.adjust(-41)),
+                                Math.toRadians(alliance.adjust(90)))
+                        .setReversed(false)
+                        .build();
+
+        final TrajectorySequence toShippingHubLevel2 =
+                mecanumDrive.trajectorySequenceBuilder(
+                        new Pose2d(7,
+                                alliance.adjust(-62),
+                                Math.toRadians(alliance.adjust(270))))
+                        .setReversed(true)
+                        .splineTo(new Vector2d(-12, alliance.adjust(-41)),
                                 Math.toRadians(alliance.adjust(90)))
                         .setReversed(false)
                         .build();
@@ -115,12 +126,12 @@ public abstract class WarehouseSideAuto extends OpModeTemplate {
 
         switch (randomization) {
             case LEVEL_1:
-                toShippingHub = toShippingHubLevel1And2;
+                toShippingHub = toShippingHubLevel1;
                 park = parkAll;
                 depositExtension = deposit::goToLevel1;
                 break;
             case LEVEL_2:
-                toShippingHub = toShippingHubLevel1And2;
+                toShippingHub = toShippingHubLevel2;
                 park = parkAll;
                 depositExtension = () -> deposit.goToHeight(14.0);
                 break;
