@@ -42,7 +42,7 @@ public abstract class WarehouseSideAuto extends OpModeTemplate {
                 alliance.adjust(-62),
                 Math.toRadians(alliance.adjust(270))));
 
-        final TrajectorySequence toShippingHubLevel1 =
+        final TrajectorySequence toShippingHubLevel1And2 =
                 mecanumDrive.trajectorySequenceBuilder(
                         new Pose2d(7,
                                 alliance.adjust(-62),
@@ -53,7 +53,7 @@ public abstract class WarehouseSideAuto extends OpModeTemplate {
                         .setReversed(false)
                         .build();
 
-        final TrajectorySequence toShippingHubLevel2And3 =
+        final TrajectorySequence toShippingHubLevel3 =
                 mecanumDrive.trajectorySequenceBuilder(
                         new Pose2d(7,
                                 alliance.adjust(-62),
@@ -115,19 +115,19 @@ public abstract class WarehouseSideAuto extends OpModeTemplate {
 
         switch (randomization) {
             case LEVEL_1:
-                toShippingHub = toShippingHubLevel1;
+                toShippingHub = toShippingHubLevel1And2;
                 park = parkAll;
                 depositExtension = deposit::goToLevel1;
                 break;
             case LEVEL_2:
-                toShippingHub = toShippingHubLevel2And3;
+                toShippingHub = toShippingHubLevel1And2;
                 park = parkAll;
                 depositExtension = () -> deposit.goToHeight(14.0);
                 break;
             default: // go to level 3, even if it's null because more points if just guessing
-                toShippingHub = toShippingHubLevel2And3;
+                toShippingHub = toShippingHubLevel3;
                 park = parkAll;
-                depositExtension = () -> deposit.goToHeight(25.0);
+                depositExtension = () -> deposit.goToHeight(24.5);
                 break;
         }
 
