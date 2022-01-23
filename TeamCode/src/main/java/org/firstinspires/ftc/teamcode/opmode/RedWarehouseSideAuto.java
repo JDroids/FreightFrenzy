@@ -8,8 +8,8 @@ import org.opencv.core.Point;
 public class RedWarehouseSideAuto extends WarehouseSideAuto {
     public RedWarehouseSideAuto() {
         super(Alliance.RED,
-                new Point(30,140),
-                new Point(170,140),
+                new Point(80,140),
+                new Point(190,140),
                 new Point(300,140));
     }
 }

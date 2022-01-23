@@ -106,7 +106,9 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
                 new Pose2d(-60,
                 alliance.adjust(-58),
                 Math.toRadians(alliance.adjust(90))))
-                    .turn(alliance.equals(Alliance.RED) ? 0 : Math.toRadians(55))
+                    .forward(4.0)
+                    .turn(alliance.equals(Alliance.RED) ? 0 : Math.toRadians(45))
+                    .back(3.0)
                     .build();
 
         final TrajectorySequence park =
@@ -114,7 +116,7 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
                         new Pose2d(-60,
                                 alliance.adjust(-58),
                                 Math.toRadians(alliance.adjust(90))))
-                        .forward(21.0)
+                        .forward(24.0)
                         .build();
 
 

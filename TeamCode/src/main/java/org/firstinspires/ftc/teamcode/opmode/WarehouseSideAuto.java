@@ -81,7 +81,10 @@ public abstract class WarehouseSideAuto extends OpModeTemplate {
                                 alliance.adjust(-44),
                                 Math.toRadians(alliance.adjust(270))))
                         .forward(20.0)
-                        .turn(Math.toRadians(alliance.adjust(90.0)))
+                        .turn(Math.toRadians(
+                                alliance == Alliance.RED
+                                        ? alliance.adjust(90.0)
+                                        : alliance.adjust(80.0)))
                         .forward(60.0)
                         .build();
 
