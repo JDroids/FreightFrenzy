@@ -23,7 +23,6 @@ public class FollowTrajectorySequence extends CommandBase {
     @Override
     public void execute() {
         mecanumDrive.update();
-        mecanumDrive.updatePoseEstimate();
     }
 
     @Override

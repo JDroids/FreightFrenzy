@@ -78,7 +78,7 @@ public class Deposit extends SubsystemBase {
 
                 if (Math.abs(
                         extensionMotor.getCurrentPosition() - extensionMotor.getTargetPosition())
-                        < inchesToTicks(1.0)) {
+                        < inchesToTicks(2.0)) {
                     state = State.RETRACTED;
                 }
                 break;
@@ -129,6 +129,11 @@ public class Deposit extends SubsystemBase {
     public void retract() {
         targetHeight = RETRACTED_HEIGHT;
         state = State.RETRACTING;
+    }
+
+    // this is a dirty hack, shouldn't be necessary
+    public void retracted() {
+        state = State.RETRACTED;
     }
 
     public void deploy() {

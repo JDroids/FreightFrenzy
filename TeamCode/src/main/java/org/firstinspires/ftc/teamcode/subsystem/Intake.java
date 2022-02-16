@@ -33,7 +33,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void outtake() {
-        power = 1.0;
+        power = -1.0;
     }
 
     public void stop() {
