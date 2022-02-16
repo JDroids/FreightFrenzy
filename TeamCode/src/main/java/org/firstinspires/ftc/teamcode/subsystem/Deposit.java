@@ -23,12 +23,12 @@ public class Deposit extends SubsystemBase {
 
     private ElapsedTime timer = new ElapsedTime();
 
-    public static double RETRACTED_HEIGHT = 0.34;
+    public static double RETRACTED_HEIGHT = 0.5;
     public static double LEVEL_1_HEIGHT = 7;
     public static double LEVEL_2_HEIGHT = 14;
     public static double LEVEL_3_HEIGHT = 30;
 
-    public static double RETRACTED_POSITION = 0.32;
+    public static double RETRACTED_POSITION = 0.3;
     public static double MOVING_POSITION = 0.5;
     public static double DEPLOY_POSITION = 1.0;
     public static double TELEOP_DEPLOY_POSITION = 0.8;
@@ -76,7 +76,9 @@ public class Deposit extends SubsystemBase {
             case RETRACTING:
                 flipServo.setPosition(MOVING_POSITION);
 
-                if (!extensionMotor.isBusy()) {
+                if (Math.abs(
+                        extensionMotor.getCurrentPosition() - extensionMotor.getTargetPosition())
+                        < inchesToTicks(1.0)) {
                     state = State.RETRACTED;
                 }
                 break;
