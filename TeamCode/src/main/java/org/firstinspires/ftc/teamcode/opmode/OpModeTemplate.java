@@ -7,12 +7,14 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystem.Carousel;
 import org.firstinspires.ftc.teamcode.subsystem.Deposit;
 import org.firstinspires.ftc.teamcode.subsystem.Intake;
+import org.firstinspires.ftc.teamcode.subsystem.TurretCap;
 
 abstract public class OpModeTemplate extends CommandOpMode {
     protected SampleMecanumDrive mecanumDrive;
     protected Deposit deposit;
     protected Intake intake;
     protected Carousel carousel;
+    protected TurretCap turretCap;
 
     protected GamepadEx driverGamepad;
     protected GamepadEx secondaryGamepad;
@@ -23,8 +25,9 @@ abstract public class OpModeTemplate extends CommandOpMode {
         deposit = new Deposit(hardwareMap, resetEncoders);
         intake = new Intake(hardwareMap);
         carousel = new Carousel(hardwareMap);
+        turretCap = new TurretCap(hardwareMap);
 
-        register(intake, deposit, carousel);
+        register(intake, deposit, carousel, turretCap);
 
         driverGamepad = new GamepadEx(gamepad1);
         secondaryGamepad = new GamepadEx(gamepad2);

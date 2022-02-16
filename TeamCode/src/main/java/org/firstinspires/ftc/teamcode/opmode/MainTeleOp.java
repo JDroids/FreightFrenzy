@@ -28,6 +28,12 @@ public class MainTeleOp extends OpModeTemplate {
 
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_UP).whenPressed(() -> Deposit.offset += 0.25);
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_DOWN).whenPressed(() -> Deposit.offset -= 0.25);
+
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_LEFT).whenPressed(turretCap::decreaseTurret);
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_RIGHT).whenPressed(turretCap::increaseTurret);
+
+        new Trigger(() -> gamepad2.left_trigger > 0.3).whenActive(turretCap::decreaseTilt);
+        new Trigger(() -> gamepad2.right_trigger > 0.3).whenActive(turretCap::increaseTilt);
     }
 
     @Override
@@ -45,5 +51,7 @@ public class MainTeleOp extends OpModeTemplate {
         intake.setPower(Math.signum(rawIntakePower) * rawIntakePower * rawIntakePower);
 
         carousel.setPower(gamepad1.left_trigger - gamepad1.right_trigger);
+
+        turretCap.setExtendPower(-gamepad2.right_stick_y);
     }
 }
