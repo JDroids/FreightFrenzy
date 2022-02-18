@@ -92,7 +92,7 @@ public abstract class CyclingWarehouseSideAuto extends OpModeTemplate {
 
         final TrajectorySequence driveForwardsToIntake =
                 mecanumDrive.trajectorySequenceBuilder(intakeCycle.end())
-                    .forward(10.0)
+                    .forward(5.0)
                     .build();
 
         final TrajectorySequence toShippingHubForCycling =
