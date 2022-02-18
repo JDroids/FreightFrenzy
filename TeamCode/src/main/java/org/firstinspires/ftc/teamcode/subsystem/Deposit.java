@@ -40,6 +40,7 @@ public class Deposit extends SubsystemBase {
         GOING_TO_HEIGHT,
         DEPLOY,
         TELEOP_DEPLOY,
+        FLIPPING_BACK_DEPOSIT,
         STARTING
     }
 
@@ -96,7 +97,15 @@ public class Deposit extends SubsystemBase {
             case TELEOP_DEPLOY:
                 flipServo.setPosition(TELEOP_DEPLOY_POSITION);
 
-                if (timer.seconds() > 0.5) {
+                if (timer.seconds() > 0.75) {
+                    state = State.FLIPPING_BACK_DEPOSIT;
+                    timer.reset();
+                }
+                break;
+            case FLIPPING_BACK_DEPOSIT:
+                flipServo.setPosition(MOVING_POSITION);
+
+                if (timer.seconds() > 0.25) {
                     targetHeight = RETRACTED_HEIGHT;
                     state = State.RETRACTING;
                 }
