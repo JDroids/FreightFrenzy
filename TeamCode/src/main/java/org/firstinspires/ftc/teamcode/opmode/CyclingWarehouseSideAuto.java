@@ -87,20 +87,20 @@ public abstract class CyclingWarehouseSideAuto extends OpModeTemplate {
                                 alliance == Alliance.RED
                                         ? alliance.adjust(90.0)
                                         : alliance.adjust(80.0)))
-                        .forward(60.0)
+                        .forward(50.0)
                         .build();
 
         final TrajectorySequence driveForwardsToIntake =
                 mecanumDrive.trajectorySequenceBuilder(intakeCycle.end())
-                    .forward(5.0)
+                    .forward(18.0)
                     .build();
 
         final TrajectorySequence toShippingHubForCycling =
                 mecanumDrive.trajectorySequenceBuilder(driveForwardsToIntake.end())
                         .setReversed(true)
-                        .back(20.0)
-                        .splineTo(new Vector2d(-12, alliance.adjust(-44)),
-                                Math.toRadians(alliance.adjust(90)))
+                        .back(30.0)
+                        .splineTo(new Vector2d(-6, alliance.adjust(-42)),
+                                Math.toRadians(alliance.adjust(100)))
                         .setReversed(false)
                         .build();
 
@@ -162,7 +162,8 @@ public abstract class CyclingWarehouseSideAuto extends OpModeTemplate {
                 new FollowTrajectorySequence(mecanumDrive, toShippingHubPreload),
                 new InstantCommand(deposit::deploy).andThen(new WaitCommand(1000)),
                 cycleCommand(intakeCycle, driveForwardsToIntake, toShippingHubForCycling),
-                new FollowTrajectorySequence(mecanumDrive, intakeCycle)
+                new FollowTrajectorySequence(mecanumDrive, intakeCycle),
+                new FollowTrajectorySequence(mecanumDrive, driveForwardsToIntake)
         ));
     }
 
@@ -171,10 +172,12 @@ public abstract class CyclingWarehouseSideAuto extends OpModeTemplate {
                                 TrajectorySequence toShippingHub) {
         return new SequentialCommandGroup(
                 new FollowTrajectorySequence(mecanumDrive, intakeCycle),
-                new InstantCommand(deposit::retracted),
-                new WaitCommand(1000),
-                new InstantCommand(intake::intake),
+                new InstantCommand(deposit::autoIntake),
+                new WaitCommand(400),
+                new InstantCommand(() -> intake.setPower(1.0)),
+                new WaitCommand(2000),
                 new FollowTrajectorySequence(mecanumDrive, driveForwardsToIntake),
+                new WaitCommand(1000),
                 new InstantCommand(() -> deposit.goToHeight(24.5)),
                 new WaitCommand(1000),
                 new InstantCommand(intake::outtake),

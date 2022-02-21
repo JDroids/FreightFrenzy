@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
-import android.util.Log;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -40,7 +38,7 @@ public class Deposit extends SubsystemBase {
         GOING_TO_HEIGHT,
         DEPLOY,
         TELEOP_DEPLOY,
-        STARTING
+        AUTO_INTAKE
     }
 
     private State state = State.RETRACTED;
@@ -93,6 +91,9 @@ public class Deposit extends SubsystemBase {
                     state = State.RETRACTING;
                 }
                 break;
+            case AUTO_INTAKE:
+                flipServo.setPosition(0.25);
+                break;
             case TELEOP_DEPLOY:
                 flipServo.setPosition(TELEOP_DEPLOY_POSITION);
 
@@ -122,18 +123,13 @@ public class Deposit extends SubsystemBase {
         goToHeight(LEVEL_3_HEIGHT);
     }
 
-    public void start() {
-        state = State.STARTING;
+    public void autoIntake() {
+        state = State.AUTO_INTAKE;
     }
 
     public void retract() {
         targetHeight = RETRACTED_HEIGHT;
         state = State.RETRACTING;
-    }
-
-    // this is a dirty hack, shouldn't be necessary
-    public void retracted() {
-        state = State.RETRACTED;
     }
 
     public void deploy() {

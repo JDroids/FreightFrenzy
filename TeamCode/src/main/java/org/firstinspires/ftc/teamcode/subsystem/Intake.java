@@ -9,8 +9,6 @@ public class Intake extends SubsystemBase {
     private HardwareMap hardwareMap;
     private DcMotorEx intakeMotor;
 
-    private double power;
-
     public Intake(HardwareMap hardwareMap) {
         this.hardwareMap = hardwareMap;
 
@@ -25,22 +23,22 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        intakeMotor.setPower(power);
+
     }
 
     public void intake() {
-        power = 1.0;
+        setPower(1.0);
     }
 
     public void outtake() {
-        power = -1.0;
+        setPower(-1.0);
     }
 
     public void stop() {
-        power = 0.0;
+        setPower(0.0);
     }
 
     public void setPower(double power) {
-        this.power = power;
+        intakeMotor.setPower(power);
     }
 }

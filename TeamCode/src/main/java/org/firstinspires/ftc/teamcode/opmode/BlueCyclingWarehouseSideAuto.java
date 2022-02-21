@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.opencv.core.Point;
 
-@Disabled
 @Autonomous
 public class BlueCyclingWarehouseSideAuto extends CyclingWarehouseSideAuto {
     public BlueCyclingWarehouseSideAuto() {
