@@ -24,7 +24,7 @@ public class MainTeleOp extends OpModeTemplate {
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.A).whenPressed(deposit::retract);
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.Y).whenPressed(() -> deposit.goToHeight(14.0));
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.X).whenPressed(() -> deposit.goToHeight(7.0));
-        new GamepadButton(secondaryGamepad, GamepadKeys.Button.B).whenPressed(() -> deposit.goToHeight(7.0));
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.B).whenPressed(() -> deposit.goToHeight(10.5));
 
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_UP).whenPressed(() -> Deposit.offset += 0.25);
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_DOWN).whenPressed(() -> Deposit.offset -= 0.25);
