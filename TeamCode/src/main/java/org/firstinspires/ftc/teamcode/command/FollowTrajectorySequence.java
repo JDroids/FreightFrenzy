@@ -17,7 +17,7 @@ public class FollowTrajectorySequence extends CommandBase {
 
     @Override
     public void initialize() {
-        mecanumDrive.followTrajectorySequence(sequence);
+        mecanumDrive.followTrajectorySequenceAsync(sequence);
     }
 
     @Override
