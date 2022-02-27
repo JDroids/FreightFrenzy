@@ -26,14 +26,16 @@ public class MainTeleOp extends OpModeTemplate {
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.X).whenPressed(() -> deposit.goToHeight(7.0));
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.B).whenPressed(() -> deposit.goToHeight(10.5));
 
+        new Trigger(() -> gamepad2.left_trigger > 0.3).whenActive(
+                () -> deposit.goToHeight(deposit.getTargetHeight() - 1.5));
+        new Trigger(() -> gamepad2.right_trigger > 0.3).whenActive(
+                () -> deposit.goToHeight(deposit.getTargetHeight() + 1.5));
+
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_UP).whenPressed(() -> Deposit.offset += 0.25);
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_DOWN).whenPressed(() -> Deposit.offset -= 0.25);
 
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_LEFT).whenPressed(turretCap::decreaseTurret);
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_RIGHT).whenPressed(turretCap::increaseTurret);
-
-        new Trigger(() -> gamepad2.left_trigger > 0.3).whenActive(turretCap::decreaseTilt);
-        new Trigger(() -> gamepad2.right_trigger > 0.3).whenActive(turretCap::increaseTilt);
     }
 
     @Override
