@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
@@ -77,31 +78,43 @@ public abstract class CyclingWarehouseSideAuto extends OpModeTemplate {
                         .setReversed(false)
                         .build();
 
-        final TrajectorySequence intakeCycle =
+        final TrajectorySequence intakeCycle1 =
                 mecanumDrive.trajectorySequenceBuilder(
                         new Pose2d(-12,
                                 alliance.adjust(-44),
                                 Math.toRadians(alliance.adjust(270))))
-                        .forward(20.0)
-                        .turn(Math.toRadians(
-                                alliance == Alliance.RED
-                                        ? alliance.adjust(90.0)
-                                        : alliance.adjust(80.0)))
-                        .forward(50.0)
+                        .splineTo(new Vector2d(12.0, alliance.adjust(-65)), 0.0)
+                        .forward(36.0)
                         .build();
 
-        final TrajectorySequence driveForwardsToIntake =
-                mecanumDrive.trajectorySequenceBuilder(intakeCycle.end())
-                    .forward(18.0)
-                    .build();
-
-        final TrajectorySequence toShippingHubForCycling =
-                mecanumDrive.trajectorySequenceBuilder(driveForwardsToIntake.end())
+        final TrajectorySequence toShippingHubForCycling1 =
+                mecanumDrive.trajectorySequenceBuilder(intakeCycle1.end())
                         .setReversed(true)
                         .back(30.0)
-                        .splineTo(new Vector2d(-6, alliance.adjust(-42)),
-                                Math.toRadians(alliance.adjust(100)))
+                        .splineTo(new Vector2d(-4, alliance.adjust(-46)),
+                                Math.toRadians(alliance.adjust(110)))
                         .setReversed(false)
+                        .build();
+
+        final TrajectorySequence intakeCycle2 =
+                mecanumDrive.trajectorySequenceBuilder(toShippingHubForCycling1.end())
+                        .splineTo(new Vector2d(12.0, alliance.adjust(-65)), 0.0)
+                        .forward(40.0)
+                        .build();
+
+        final TrajectorySequence toShippingHubForCycling2 =
+                mecanumDrive.trajectorySequenceBuilder(intakeCycle2.end())
+                        .setReversed(true)
+                        .back(30.0)
+                        .splineTo(new Vector2d(-20, alliance.adjust(-46)),
+                                Math.toRadians(alliance.adjust(75)))
+                        .setReversed(false)
+                        .build();
+
+        final TrajectorySequence park =
+                mecanumDrive.trajectorySequenceBuilder(toShippingHubForCycling2.end())
+                        .splineTo(new Vector2d(12.0, alliance.adjust(-64)), 0.0)
+                        .forward(36.0)
                         .build();
 
         OpenCvWebcam webcam;
@@ -158,30 +171,34 @@ public abstract class CyclingWarehouseSideAuto extends OpModeTemplate {
         }
 
         schedule(new SequentialCommandGroup(
-                new InstantCommand(depositExtension),
-                new FollowTrajectorySequence(mecanumDrive, toShippingHubPreload),
-                new InstantCommand(deposit::deploy).andThen(new WaitCommand(1000)),
-                cycleCommand(intakeCycle, driveForwardsToIntake, toShippingHubForCycling),
-                new FollowTrajectorySequence(mecanumDrive, intakeCycle),
-                new FollowTrajectorySequence(mecanumDrive, driveForwardsToIntake)
+                new FollowTrajectorySequence(mecanumDrive, toShippingHubPreload).alongWith(
+                        new InstantCommand(depositExtension)
+                        ),
+                new InstantCommand(deposit::deploy).alongWith(new WaitCommand(1000)),
+                cycleCommand(intakeCycle1, toShippingHubForCycling1),
+                cycleCommand(intakeCycle2, toShippingHubForCycling2),
+                new FollowTrajectorySequence(mecanumDrive, park).alongWith(
+                    new InstantCommand(deposit::retract)
+                )
         ));
     }
 
     public Command cycleCommand(TrajectorySequence intakeCycle,
-                                TrajectorySequence driveForwardsToIntake,
                                 TrajectorySequence toShippingHub) {
         return new SequentialCommandGroup(
-                new FollowTrajectorySequence(mecanumDrive, intakeCycle),
-                new InstantCommand(deposit::autoIntake),
-                new WaitCommand(400),
-                new InstantCommand(() -> intake.setPower(1.0)),
-                new WaitCommand(2000),
-                new FollowTrajectorySequence(mecanumDrive, driveForwardsToIntake),
+                new FollowTrajectorySequence(mecanumDrive, intakeCycle).alongWith(
+                    new InstantCommand(deposit::retract).andThen(
+                            new WaitCommand(1000),
+                            new InstantCommand(intake::intake))
+                        ),
                 new WaitCommand(1000),
-                new InstantCommand(() -> deposit.goToHeight(24.5)),
-                new WaitCommand(1000),
-                new InstantCommand(intake::outtake),
-                new FollowTrajectorySequence(mecanumDrive, toShippingHub),
+                new InstantCommand(intake::stop),
+                new FollowTrajectorySequence(mecanumDrive, toShippingHub).alongWith(
+                        new InstantCommand(() -> deposit.goToHeight(24.5)).andThen(
+                                new WaitCommand(500),
+                                new InstantCommand(intake::outtake)
+                            )
+                    ),
                 new InstantCommand(intake::stop),
                 new InstantCommand(deposit::deploy).andThen(new WaitCommand(1000))
         );

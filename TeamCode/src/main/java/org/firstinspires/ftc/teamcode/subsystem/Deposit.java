@@ -34,7 +34,7 @@ public class Deposit extends SubsystemBase {
     public static double TELEOP_DEPLOY_POSITION = 0.8;
 
     public static double BLOCKER_SERVO_OPEN = 0.5;
-    public static double BLOCKER_SERVO_BLOCKING = 0.2;
+    public static double BLOCKER_SERVO_BLOCKING = 0.24;
 
     public boolean disableBlocker = false;
 
@@ -44,13 +44,12 @@ public class Deposit extends SubsystemBase {
         WAITING_ON_BLOCKER_SERVO,
         GOING_TO_HEIGHT,
         DEPLOY,
-        TELEOP_DEPLOY,
-        AUTO_INTAKE
+        TELEOP_DEPLOY
     }
 
     private State state = State.RETRACTED;
 
-    public Deposit(HardwareMap hardwareMap, boolean shouldResetEncoder) {
+    public Deposit(HardwareMap hardwareMap, boolean isAuto) {
 
         this.hardwareMap = hardwareMap;
 
@@ -60,8 +59,9 @@ public class Deposit extends SubsystemBase {
 
         extensionMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        if (shouldResetEncoder) {
+        if (isAuto) {
             extensionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            state = State.GOING_TO_HEIGHT;
         }
 
         extensionMotor.setTargetPosition(inchesToTicks(RETRACTED_HEIGHT));
@@ -118,10 +118,6 @@ public class Deposit extends SubsystemBase {
                     state = State.RETRACTING;
                 }
                 break;
-            case AUTO_INTAKE:
-                flipServo.setPosition(0.25);
-                blockerServo.setPosition(BLOCKER_SERVO_BLOCKING);
-                break;
             case TELEOP_DEPLOY:
                 flipServo.setPosition(TELEOP_DEPLOY_POSITION);
                 blockerServo.setPosition(BLOCKER_SERVO_OPEN);
@@ -164,10 +160,6 @@ public class Deposit extends SubsystemBase {
         goToHeight(LEVEL_3_HEIGHT);
     }
 
-    public void autoIntake() {
-        state = State.AUTO_INTAKE;
-    }
-
     public void retract() {
         targetHeight = RETRACTED_HEIGHT;
         state = State.RETRACTING;
@@ -192,7 +184,9 @@ public class Deposit extends SubsystemBase {
     }
 
     public boolean isBusy() {
-        return extensionMotor.isBusy() || state == State.DEPLOY;
+        return extensionMotor.isBusy()
+                || state == State.DEPLOY
+                || state == State.WAITING_ON_BLOCKER_SERVO;
     }
 
     private static int inchesToTicks(double inches) {
