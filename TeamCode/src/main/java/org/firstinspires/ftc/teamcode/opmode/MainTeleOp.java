@@ -31,11 +31,17 @@ public class MainTeleOp extends OpModeTemplate {
         new Trigger(() -> gamepad2.right_trigger > 0.3).whenActive(
                 () -> deposit.goToHeight(deposit.getTargetHeight() + 1.5));
 
-        new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_UP).whenPressed(() -> Deposit.offset += 0.25);
-        new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_DOWN).whenPressed(() -> Deposit.offset -= 0.25);
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(() -> Deposit.offset += 0.25);
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.RIGHT_STICK_BUTTON).whenPressed(() -> Deposit.offset -= 0.25);
 
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_LEFT).whenPressed(turretCap::decreaseTurret);
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_RIGHT).whenPressed(turretCap::increaseTurret);
+
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_DOWN).whenPressed(turretCap::decreaseTilt);
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_UP).whenPressed(turretCap::increaseTilt);
+
+        new GamepadButton(driverGamepad, GamepadKeys.Button.A).whenPressed(
+                () -> deposit.disableBlocker = !deposit.disableBlocker);
     }
 
     @Override

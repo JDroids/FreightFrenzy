@@ -12,9 +12,10 @@
             <goBILDA5202SeriesMotor name="depositMotor" port="0" />
             <goBILDA5202SeriesMotor name="intakeMotor" port="1" />
             <goBILDA5202SeriesMotor name="carouselMotor" port="2" />
-            <ContinuousRotationServo name="extensionServo" port="0" />
+            <RevRoboticsCoreHexMotor name="tapeExtendMotor" port="3" />
+            <Servo name="tiltServo" port="0" />
             <Servo name="turretServo" port="1" />
-            <Servo name="tiltServo" port="2" />
+            <Servo name="blockerServo" port="2" />
             <LynxEmbeddedIMU name="imu" port="0" bus="0" />
         </LynxModule>
     </LynxUsbDevice>

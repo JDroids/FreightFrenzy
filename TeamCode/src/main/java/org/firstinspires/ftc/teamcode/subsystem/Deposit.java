@@ -14,12 +14,14 @@ public class Deposit extends SubsystemBase {
     private final HardwareMap hardwareMap;
     private DcMotorEx extensionMotor;
     private Servo flipServo;
+    private Servo blockerServo;
 
     private double targetHeight;
 
     public static double offset = 0;
 
     private ElapsedTime timer = new ElapsedTime();
+    private double extensionMotorPower = 1.0;
 
     public static double RETRACTED_HEIGHT = 0.5;
     public static double LEVEL_1_HEIGHT = 7;
@@ -31,10 +33,15 @@ public class Deposit extends SubsystemBase {
     public static double DEPLOY_POSITION = 1.0;
     public static double TELEOP_DEPLOY_POSITION = 0.8;
 
+    public static double BLOCKER_SERVO_OPEN = 0.5;
+    public static double BLOCKER_SERVO_BLOCKING = 0.2;
+
+    public boolean disableBlocker = false;
 
     private enum State {
         RETRACTED,
         RETRACTING,
+        WAITING_ON_BLOCKER_SERVO,
         GOING_TO_HEIGHT,
         DEPLOY,
         TELEOP_DEPLOY,
@@ -49,6 +56,7 @@ public class Deposit extends SubsystemBase {
 
         extensionMotor = hardwareMap.get(DcMotorEx.class, "depositMotor");
         flipServo = hardwareMap.get(Servo.class, "depositServo");
+        blockerServo = hardwareMap.get(Servo.class, "blockerServo");
 
         extensionMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -65,26 +73,45 @@ public class Deposit extends SubsystemBase {
     @Override
     public void periodic() {
         extensionMotor.setTargetPosition(inchesToTicks(targetHeight + offset));
-        extensionMotor.setPower(1.0);
+        extensionMotor.setPower(extensionMotorPower);
 
         switch (state) {
             case RETRACTED:
                 flipServo.setPosition(RETRACTED_POSITION);
+
+                if (timer.seconds() > 0.2) {
+                    blockerServo.setPosition(
+                            disableBlocker ? BLOCKER_SERVO_OPEN : BLOCKER_SERVO_BLOCKING);
+                }
+                break;
+            case WAITING_ON_BLOCKER_SERVO:
+                flipServo.setPosition(RETRACTED_POSITION);
+                blockerServo.setPosition(BLOCKER_SERVO_OPEN);
+
+                if (timer.seconds() > 0.2 || disableBlocker) {
+                    extensionMotorPower = 1.0;
+                    state = State.GOING_TO_HEIGHT;
+                }
+
                 break;
             case RETRACTING:
                 flipServo.setPosition(MOVING_POSITION);
+                blockerServo.setPosition(BLOCKER_SERVO_OPEN);
 
                 if (Math.abs(
                         extensionMotor.getCurrentPosition() - extensionMotor.getTargetPosition())
                         < inchesToTicks(2.0)) {
+                    timer.reset();
                     state = State.RETRACTED;
                 }
                 break;
             case GOING_TO_HEIGHT:
                 flipServo.setPosition(MOVING_POSITION);
+                blockerServo.setPosition(BLOCKER_SERVO_OPEN);
                 break;
             case DEPLOY:
                 flipServo.setPosition(DEPLOY_POSITION);
+                blockerServo.setPosition(BLOCKER_SERVO_OPEN);
 
                 if (timer.seconds() > 0.5) {
                     targetHeight = RETRACTED_HEIGHT;
@@ -93,9 +120,11 @@ public class Deposit extends SubsystemBase {
                 break;
             case AUTO_INTAKE:
                 flipServo.setPosition(0.25);
+                blockerServo.setPosition(BLOCKER_SERVO_BLOCKING);
                 break;
             case TELEOP_DEPLOY:
                 flipServo.setPosition(TELEOP_DEPLOY_POSITION);
+                blockerServo.setPosition(BLOCKER_SERVO_OPEN);
 
                 if (timer.seconds() > 0.5) {
                     targetHeight = RETRACTED_HEIGHT;
@@ -107,9 +136,21 @@ public class Deposit extends SubsystemBase {
 
     public void goToHeight(double targetHeight) {
         this.targetHeight = targetHeight;
-        state = State.GOING_TO_HEIGHT;
+
+        if (state == State.RETRACTED) {
+            extensionMotorPower = 0;
+            timer.reset();
+            state = State.WAITING_ON_BLOCKER_SERVO;
+        }
+        else {
+            extensionMotorPower = 1;
+            state = State.GOING_TO_HEIGHT;
+        }
     }
 
+    public double getTargetHeight() {
+        return targetHeight;
+    }
 
     public void goToLevel1() {
         goToHeight(LEVEL_1_HEIGHT);
