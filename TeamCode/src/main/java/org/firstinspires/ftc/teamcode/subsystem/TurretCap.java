@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.subsystem;
 import android.util.Log;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -24,13 +23,20 @@ public class TurretCap extends SubsystemBase {
     private double tiltServoPosition = 0.68;
     private double extendPower = 0.0;
 
-    public TurretCap(HardwareMap hardwareMap) {
+    public boolean isFastMode = true;
+
+    public TurretCap(HardwareMap hardwareMap, boolean isAuto) {
         turretServo = hardwareMap.get(Servo.class, "turretServo");
         tiltServo = hardwareMap.get(Servo.class, "tiltServo");
         tapeMeasureExtend =
                 hardwareMap.get(DcMotor.class, "tapeExtendMotor");
 
         tiltServo.setDirection(Servo.Direction.REVERSE);
+
+        if (!isAuto) {
+            turretServoPosition = 0.7;
+            tiltServoPosition = 0.6;
+        }
     }
 
     @Override
@@ -39,39 +45,43 @@ public class TurretCap extends SubsystemBase {
         tiltServo.setPosition(tiltServoPosition);
         tapeMeasureExtend.setPower(extendPower);
 
-        /*Log.d("turret cap positions",
+        Log.d("turret cap positions",
                 String.format(
                         "turretServo: %.3f, tiltServo: %.3f",
                         turretServoPosition,
-                        tiltServoPosition));*/
+                        tiltServoPosition));
     }
 
     public void increaseTilt() {
         tiltServoPosition = Range.clip(
-                tiltServoPosition + 0.001,
+                tiltServoPosition + 0.005,
                 TILT_SERVO_LOWER,
                 TILT_SERVO_UPPER);
     }
 
     public void decreaseTilt() {
         tiltServoPosition = Range.clip(
-                tiltServoPosition - 0.001,
+                tiltServoPosition - getIncrement(),
                 TILT_SERVO_LOWER,
                 TILT_SERVO_UPPER);
     }
 
     public void increaseTurret() {
         turretServoPosition = Range.clip(
-                turretServoPosition + 0.001,
+                turretServoPosition + getIncrement(),
                 TURRET_SERVO_LOWER,
                 TURRET_SERVO_UPPER);
     }
 
     public void decreaseTurret() {
         turretServoPosition = Range.clip(
-                turretServoPosition - 0.001,
+                turretServoPosition - getIncrement(),
                 TURRET_SERVO_LOWER,
                 TURRET_SERVO_UPPER);
+    }
+
+    private double getIncrement() {
+        return isFastMode ? 0.025 : 0.005;
     }
 
     public void setExtendPower(double extendPower) {

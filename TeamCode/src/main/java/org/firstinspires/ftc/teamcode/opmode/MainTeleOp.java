@@ -40,8 +40,11 @@ public class MainTeleOp extends OpModeTemplate {
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_DOWN).whenPressed(turretCap::decreaseTilt);
         new GamepadButton(secondaryGamepad, GamepadKeys.Button.DPAD_UP).whenPressed(turretCap::increaseTilt);
 
-        new GamepadButton(driverGamepad, GamepadKeys.Button.A).whenPressed(
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.START).whenPressed(
                 () -> deposit.disableBlocker = !deposit.disableBlocker);
+
+        new GamepadButton(secondaryGamepad, GamepadKeys.Button.BACK).whenPressed(
+                () -> turretCap.isFastMode = !turretCap.isFastMode);
     }
 
     @Override

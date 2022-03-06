@@ -36,7 +36,7 @@ public class Deposit extends SubsystemBase {
     public static double BLOCKER_SERVO_OPEN = 0.5;
     public static double BLOCKER_SERVO_BLOCKING = 0.24;
 
-    public boolean disableBlocker = false;
+    public boolean disableBlocker;
 
     private enum State {
         RETRACTED,
@@ -64,6 +64,8 @@ public class Deposit extends SubsystemBase {
             state = State.GOING_TO_HEIGHT;
         }
 
+        disableBlocker = !isAuto;
+
         extensionMotor.setTargetPosition(inchesToTicks(RETRACTED_HEIGHT));
         extensionMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -79,7 +81,7 @@ public class Deposit extends SubsystemBase {
             case RETRACTED:
                 flipServo.setPosition(RETRACTED_POSITION);
 
-                if (timer.seconds() > 0.2) {
+                if (timer.seconds() > 0.5) {
                     blockerServo.setPosition(
                             disableBlocker ? BLOCKER_SERVO_OPEN : BLOCKER_SERVO_BLOCKING);
                 }

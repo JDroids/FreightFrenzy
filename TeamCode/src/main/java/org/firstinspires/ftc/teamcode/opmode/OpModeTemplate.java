@@ -19,13 +19,13 @@ abstract public class OpModeTemplate extends CommandOpMode {
     protected GamepadEx driverGamepad;
     protected GamepadEx secondaryGamepad;
 
-    protected void initHardware(boolean resetEncoders) {
+    protected void initHardware(boolean isAuto) {
         mecanumDrive = new SampleMecanumDrive(hardwareMap);
 
-        deposit = new Deposit(hardwareMap, resetEncoders);
+        deposit = new Deposit(hardwareMap, isAuto);
         intake = new Intake(hardwareMap);
         carousel = new Carousel(hardwareMap);
-        turretCap = new TurretCap(hardwareMap);
+        turretCap = new TurretCap(hardwareMap, isAuto);
 
         register(intake, deposit, carousel, turretCap);
 
