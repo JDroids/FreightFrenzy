@@ -34,7 +34,7 @@ public class TurretCap extends SubsystemBase {
         tiltServo.setDirection(Servo.Direction.REVERSE);
 
         if (!isAuto) {
-            turretServoPosition = 0.7;
+            turretServoPosition = 1.0;
             tiltServoPosition = 0.6;
         }
     }

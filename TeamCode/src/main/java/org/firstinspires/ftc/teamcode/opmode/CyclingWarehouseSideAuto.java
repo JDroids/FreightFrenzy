@@ -51,7 +51,7 @@ public abstract class CyclingWarehouseSideAuto extends OpModeTemplate {
                                 alliance.adjust(-62),
                                 Math.toRadians(alliance.adjust(270))))
                         .setReversed(true)
-                        .splineTo(new Vector2d(-12, alliance.adjust(-41)),
+                        .splineTo(new Vector2d(-12, alliance.adjust(-39)),
                                 Math.toRadians(alliance.adjust(90)))
                         .setReversed(false)
                         .build();
@@ -62,7 +62,7 @@ public abstract class CyclingWarehouseSideAuto extends OpModeTemplate {
                                 alliance.adjust(-62),
                                 Math.toRadians(alliance.adjust(270))))
                         .setReversed(true)
-                        .splineTo(new Vector2d(-12, alliance.adjust(-40)),
+                        .splineTo(new Vector2d(-12, alliance.adjust(-38)),
                                 Math.toRadians(alliance.adjust(90)))
                         .setReversed(false)
                         .build();
@@ -83,30 +83,33 @@ public abstract class CyclingWarehouseSideAuto extends OpModeTemplate {
                         new Pose2d(-12,
                                 alliance.adjust(-44),
                                 Math.toRadians(alliance.adjust(270))))
-                        .splineTo(new Vector2d(12.0, alliance.adjust(-65)), 0.0)
-                        .forward(36.0)
+                        .splineTo(new Vector2d(12.0, alliance.adjust(-66)), 0.0)
+                        .forward(40.0)
                         .build();
 
         final TrajectorySequence toShippingHubForCycling1 =
                 mecanumDrive.trajectorySequenceBuilder(intakeCycle1.end())
                         .setReversed(true)
-                        .back(30.0)
-                        .splineTo(new Vector2d(-4, alliance.adjust(-46)),
+                        .back(10.0)
+                        .strafeLeft(alliance.adjust(-4.0))
+                        .back(24.0)
+                        .splineTo(new Vector2d(-4, alliance.adjust(-48)),
                                 Math.toRadians(alliance.adjust(110)))
                         .setReversed(false)
                         .build();
 
         final TrajectorySequence intakeCycle2 =
                 mecanumDrive.trajectorySequenceBuilder(toShippingHubForCycling1.end())
-                        .splineTo(new Vector2d(12.0, alliance.adjust(-65)), 0.0)
-                        .forward(40.0)
+                        .splineTo(new Vector2d(12.0, alliance.adjust(-68)), 0.0)
+                        .forward(44.0)
                         .build();
 
         final TrajectorySequence toShippingHubForCycling2 =
                 mecanumDrive.trajectorySequenceBuilder(intakeCycle2.end())
                         .setReversed(true)
-                        .back(30.0)
-                        .splineTo(new Vector2d(-20, alliance.adjust(-46)),
+                        .strafeLeft(alliance.adjust(-4.0))
+                        .back(44.0)
+                        .splineTo(new Vector2d(-20, alliance.adjust(-49)),
                                 Math.toRadians(alliance.adjust(75)))
                         .setReversed(false)
                         .build();
@@ -114,6 +117,13 @@ public abstract class CyclingWarehouseSideAuto extends OpModeTemplate {
         final TrajectorySequence park =
                 mecanumDrive.trajectorySequenceBuilder(toShippingHubForCycling2.end())
                         .splineTo(new Vector2d(12.0, alliance.adjust(-68)), 0.0)
+                        .forward(36.0)
+                        .build();
+
+        final TrajectorySequence parkFromFirstCycle =
+                mecanumDrive.trajectorySequenceBuilder(toShippingHubForCycling1.end())
+                        .splineTo(new Vector2d(12.0, alliance.adjust(-68)), 0.0)
+                        .strafeRight(alliance.adjust(12.0))
                         .forward(36.0)
                         .build();
 
@@ -176,10 +186,13 @@ public abstract class CyclingWarehouseSideAuto extends OpModeTemplate {
                         ),
                 new InstantCommand(deposit::deploy).alongWith(new WaitCommand(1000)),
                 cycleCommand(intakeCycle1, toShippingHubForCycling1),
-                cycleCommand(intakeCycle2, toShippingHubForCycling2),
+                /*cycleCommand(intakeCycle2, toShippingHubForCycling2),
                 new FollowTrajectorySequence(mecanumDrive, park).alongWith(
                     new InstantCommand(deposit::retract)
-                )
+                )*/
+
+                new FollowTrajectorySequence(mecanumDrive, parkFromFirstCycle).alongWith(
+                        new InstantCommand(deposit::retract))
         ));
     }
 
@@ -200,7 +213,7 @@ public abstract class CyclingWarehouseSideAuto extends OpModeTemplate {
                             )
                     ),
                 new InstantCommand(intake::stop),
-                new InstantCommand(deposit::deploy).andThen(new WaitCommand(1000))
+                new InstantCommand(deposit::deploy).andThen(new WaitCommand(1200))
         );
     }
 }

@@ -44,7 +44,7 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
 
         final TrajectorySequence toShippingHubLevel1 =
                 mecanumDrive.trajectorySequenceBuilder(
-                        new Pose2d(-30.5,
+                        new Pose2d(-27.5,
                                 alliance.adjust(-62),
                                 Math.toRadians(alliance.adjust(270))))
                         .setReversed(true)
@@ -65,7 +65,7 @@ public abstract class CarouselSideAuto extends OpModeTemplate {
         final TrajectorySequence toShippingHubLevel2 =
                 mecanumDrive.trajectorySequenceBuilder(
                         new Pose2d(-30.5,
-                                alliance.adjust(-62),
+                                alliance.adjust(-64),
                                 Math.toRadians(alliance.adjust(270))))
                         .setReversed(true)
                         .splineTo(new Vector2d(-30, alliance.adjust(-20)),
